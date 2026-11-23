@@ -13,6 +13,28 @@
 	reverse_proxy app:3000
 	log {
 		output stdout
-		format console
+		format filter {
+			wrap console
+			request>uri query {
+				replace access_token REDACTED
+				replace refresh_token REDACTED
+				replace id_token REDACTED
+				replace token REDACTED
+				replace token_hash REDACTED
+				replace code REDACTED
+				replace state REDACTED
+				replace ms_code REDACTED
+				replace ms_state REDACTED
+				replace otp REDACTED
+				replace password REDACTED
+				replace client_secret REDACTED
+				replace api_key REDACTED
+				replace apikey REDACTED
+				replace authorization REDACTED
+				replace signature REDACTED
+				replace sig REDACTED
+				replace hmac REDACTED
+			}
+		}
 	}
 }

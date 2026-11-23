@@ -14,7 +14,7 @@ Internet :80/:443 -> Caddy -> app TanStack Start/Nitro :3000 -> Supabase Free ex
 ## Pré-requisitos
 
 - VPS Linux com Docker Engine e Docker Compose v2;
-- Git;
+- Git e curl;
 - DNS A/AAAA do domínio apontando para a VPS;
 - portas TCP 80/443 e UDP 443 liberadas;
 - projeto Supabase Free já preparado pelo proprietário, sem migrations pelo instalador;
@@ -65,12 +65,19 @@ sudo sh partner-hub.sh install \
 ```
 
 Sem `--yes`, o instalador pede a confirmação literal `SIM` somente depois do
-clone, validação do Compose e build. Ele recusa um diretório já existente. Uma
-falha antes da saúde final mantém estado `prepared`; corrija a causa e use:
+clone, validação do Compose e build. Depois do healthcheck Docker, a readiness
+confirma HTTPS, resposta da aplicação e o endpoint de saúde do Auth HML usando
+somente as publishable keys, sem ler dados. Ele recusa um diretório já existente.
+Uma falha antes da readiness final mantém estado `prepared`; corrija a causa e use:
 
 ```sh
 sudo sh partner-hub.sh resume --dir /opt/amanda-partner-hub
 ```
+
+Falhas de clone, fetch ou checkout ficam em estado `preparing` e usam o mesmo
+comando de retomada. O instalador continua apenas quando a origem e o checkout
+existentes são inequívocos; arquivos locais, origem divergente ou checkout parcial
+são recusados sem exclusão ou sobrescrita.
 
 ## Operação
 
